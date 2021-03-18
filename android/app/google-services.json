@@ -1,0 +1,82 @@
+{
+  "project_info": {
+    "project_number": "236784599748",
+    "project_id": "foodswipe-9e794",
+    "storage_bucket": "foodswipe-9e794.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:236784599748:android:66c7f7a0ce05b5791a3f91",
+        "android_client_info": {
+          "package_name": "com.vandan.foodadmin"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "236784599748-hv4hu72q6juljt51v8t31flihn4634fu.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBXp4MHv58O6Cn84TwhABKNjEfLPNuX46g"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "236784599748-hv4hu72q6juljt51v8t31flihn4634fu.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "236784599748-hc9lkk8q6l8kgqt9j2269dthqt4l5rn3.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.vandan.foodswipe"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:236784599748:android:5b35afe8d58952801a3f91",
+        "android_client_info": {
+          "package_name": "com.vandan.foodswipe"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "236784599748-hv4hu72q6juljt51v8t31flihn4634fu.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBXp4MHv58O6Cn84TwhABKNjEfLPNuX46g"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "236784599748-hv4hu72q6juljt51v8t31flihn4634fu.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "236784599748-hc9lkk8q6l8kgqt9j2269dthqt4l5rn3.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.vandan.foodswipe"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
