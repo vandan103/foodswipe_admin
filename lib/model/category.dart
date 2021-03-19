@@ -18,9 +18,11 @@ class CategoryService {
         return snaps.documents;
       });
 
-// Future<List<DocumentSnapshot>> getSuggestions(String suggestion) =>
-//     _firestore.collection(ref).where('category', isEqualTo: suggestion).getDocuments().then((snap){
-//       return snap.documents;
-//     });
+  Future<int> categorycount() =>
+      _firestore.collection(ref).getDocuments().then((snaps) {
+        return snaps.documents.length;
+      });
 
 }
+
+

@@ -15,11 +15,12 @@ void main() {
           ],
           child: MaterialApp(
               debugShowCheckedModeBanner: false,
-              title: 'FoodSwipe',
+              title: 'FoodSwipeAdmin',
               theme: ThemeData(
                 primarySwatch: Colors.red,
               ),
-              home: ScreensController()))
+              home: ScreensController())
+      )
 
   );
 }

@@ -17,5 +17,8 @@ class ProductService {
         print(snaps.documents.length);
         return snaps.documents;
       });
+  Future<int> productcount() => _firestore.collection(ref).getDocuments().then((snaps){
+    return snaps.documents.length;
+  });
 
 }

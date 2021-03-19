@@ -89,6 +89,7 @@ class _AddProductState extends State<AddProduct> {
         leading: Icon(
           Icons.close,
           color: black,
+          
         ),
         title: Text(
           "add product",
