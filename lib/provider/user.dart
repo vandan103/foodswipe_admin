@@ -55,7 +55,7 @@ class UserProvider with ChangeNotifier{
       await _auth.createUserWithEmailAndPassword(email: email.text.trim(), password: cpassword.text.trim()).then((result){
         _firestore.collection('users').document(result.user.uid).setData({
           'name':name.text,
-          'email':email.text,
+              'email':email.text,
           'uid':result.user.uid,
 
         });

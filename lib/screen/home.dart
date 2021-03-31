@@ -1,12 +1,23 @@
+
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:foodadmin/helper/navigation.dart';
+import 'package:foodadmin/helper/style.dart';
 import 'package:foodadmin/model/category.dart';
+import 'package:foodadmin/model/order.dart';
 import 'package:foodadmin/model/product.dart';
 import 'package:foodadmin/model/restaurant.dart';
+import 'package:foodadmin/model/user.dart';
+import 'package:foodadmin/provider/user.dart';
 import 'package:foodadmin/screen/add_category.dart';
 import 'package:foodadmin/screen/add_restaurant.dart';
+import 'package:foodadmin/screen/login.dart';
 import 'package:foodadmin/screen/show_category.dart';
 import 'package:foodadmin/screen/show_product.dart';
 import 'package:foodadmin/screen/show_restaurants.dart';
+import 'package:foodadmin/widget/custom_text.dart';
+import 'package:provider/provider.dart';
 
 import 'add_product.dart';
 
@@ -22,15 +33,20 @@ class _HomeState extends State<Home> {
   CategoryService _categoryService = CategoryService();
   RestaurantService _restaurantService = RestaurantService();
   ProductService _productService = ProductService();
- // Future<int> count=RestaurantService.restaurantcount();
-  Page _selectedPage = Page.dashboard;
+  OrderServices _orderServices =OrderServices();
+  Users _users=Users();
 
+  Page _selectedPage = Page.dashboard;
   MaterialColor active = Colors.red;
   MaterialColor notActive = Colors.grey;
+  int value ;
+
+
 
 
   @override
   Widget build(BuildContext context) {
+    final  _user = Provider.of<UserProvider>(context);
     return Scaffold(
         appBar: AppBar(
           title: Row(
@@ -62,8 +78,45 @@ class _HomeState extends State<Home> {
           elevation: 0.0,
           backgroundColor: Colors.white,
         ),
+        drawer: Drawer(
+          child: ListView(
+            children: <Widget>[
+              UserAccountsDrawerHeader(
+                decoration: BoxDecoration(color: primary),
+                accountName: CustomText(
+                  text: _user?.name.text?? "username lading...",
+                  color: white,
+                  weight: FontWeight.bold,
+                  size: 18,
+                ),
+                accountEmail: CustomText(
+                  text: _user?.email.text ?? "email loading...",
+                  color: white,
+                ),
+              ),
+              ListTile(
+                onTap: () {
+                  changeScreen(context, Home());
+                },
+                leading: Icon(Icons.home),
+                title: CustomText(text: "Home"),
+              ),
+
+
+              ListTile(
+                onTap: () {
+                  _user.signOut();
+                  changeScreenReplacement(context, login());
+                },
+                leading: Icon(Icons.exit_to_app),
+                title: CustomText(text: "Log out"),
+              ),
+            ],
+          ),
+        ),
         body: _loadScreen());
   }
+
 
   Widget _loadScreen() {
     switch (_selectedPage) {
@@ -71,6 +124,13 @@ class _HomeState extends State<Home> {
         return Column(
           children: <Widget>[
             ListTile(
+              title: (
+                 Text(
+                  'Revenue',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(fontSize: 24.0, color: Colors.grey),
+                )
+              ),
               subtitle: FlatButton.icon(
                 onPressed: null,
                 icon: Icon(
@@ -78,14 +138,21 @@ class _HomeState extends State<Home> {
                   size: 30.0,
                   color: Colors.green,
                 ),
-                label: Text('12,000',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(fontSize: 30.0, color: Colors.green)),
-              ),
-              title: Text(
-                'Revenue',
-                textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 24.0, color: Colors.grey),
+                label: StreamBuilder(
+                  stream: Firestore.instance.collection('orders').snapshots(),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return CircularProgressIndicator();
+                    }
+                    var ds = snapshot.data.documents;
+                    double sum = 0.0;
+                    for(int i=0; i<ds.length;i++)
+                      sum+=(ds[i]['total']).toDouble();
+                    return Text('$sum',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(fontSize: 30.0, color: Colors.green) );
+                  },
+                ),
               ),
             ),
             Expanded(
@@ -100,10 +167,15 @@ class _HomeState extends State<Home> {
                               onPressed: null,
                               icon: Icon(Icons.people_outline),
                               label: Text("Users")),
-                          subtitle: Text(
-                            '13',
-                            textAlign: TextAlign.center,
-                            style: TextStyle(color: active, fontSize: 60.0),
+                          subtitle: FutureBuilder(
+                            future: usercount(),
+                            builder: (context, snapshot) {
+                              return Text(
+                                snapshot.data.toString(),
+                                textAlign: TextAlign.center,
+                                style: TextStyle(fontSize: 60.0, color:active,),
+                              );
+                            },
                           )),
                     ),
                   ),
@@ -114,10 +186,15 @@ class _HomeState extends State<Home> {
                           title: FlatButton.icon(
                               icon: Icon(Icons.category),
                               label: Text("Category")),
-                          subtitle: Text(
-                            '7',
-                            textAlign: TextAlign.center,
-                            style: TextStyle(color: active, fontSize: 60.0),
+                          subtitle: FutureBuilder<String>(
+                            future: categorycount(),
+                            builder: (context,snapshot) {
+                              return Text(
+                                snapshot.data.toString(),
+                                textAlign: TextAlign.center,
+                                style: TextStyle(color: active, fontSize: 60.0),
+                              );
+                            },
                           )
                       ),
                     ),
@@ -130,10 +207,16 @@ class _HomeState extends State<Home> {
                               onPressed: null,
                               icon: Icon(Icons.track_changes),
                               label: Text("Product")),
-                          subtitle: Text(
-                            '9',
-                            textAlign: TextAlign.center,
-                            style: TextStyle(color: active, fontSize: 60.0),
+                          subtitle: FutureBuilder(
+                             future: productcount(),
+                              builder:(context, snapshot) {
+                                return Text(
+                                  snapshot.data.toString(),
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(fontSize: 60.0,color: active),
+                                );
+                              },
+
                           )),
                     ),
                   ),
@@ -145,11 +228,17 @@ class _HomeState extends State<Home> {
                             onPressed: null,
                               icon: Icon(Icons.tag_faces),
                               label: Text('client')), //restaurants
-                          subtitle: Text(
-                           '7',
-                            textAlign: TextAlign.center,
-                            style: TextStyle(color: active, fontSize: 60.0),
-                          )),
+                          subtitle: FutureBuilder(
+                            future: restaurantcount(),
+                            builder: (context, snapshot) {
+                              return Text(
+                                snapshot.data.toString(),
+                                textAlign: TextAlign.center,
+                                style: TextStyle(color: active, fontSize: 60.0),
+                              );
+                            },
+                          ),
+                      ),
                     ),
                   ),
                   Padding(
@@ -160,10 +249,15 @@ class _HomeState extends State<Home> {
                               onPressed: null,
                               icon: Icon(Icons.shopping_cart),
                               label: Text("Orders")),
-                          subtitle: Text(
-                            '5',
-                            textAlign: TextAlign.center,
-                            style: TextStyle(color: active, fontSize: 60.0),
+                          subtitle: FutureBuilder(
+                            future: ordercount(),
+                            builder: (context, snapshot) {
+                              return Text(
+                                 snapshot.data.toString() ,
+                                textAlign: TextAlign.center,
+                                style: TextStyle(color: active, fontSize: 60.0),);
+                            },
+
                           )),
                     ),
                   ),
@@ -240,8 +334,42 @@ class _HomeState extends State<Home> {
         break;
       default:
         return Container();
+
+
     }
   }
 
+
+  Future<String> categorycount()  async {
+    int valueString = await _categoryService.categorycount();
+    print("the category is $valueString");
+    return valueString != null ? "$valueString" : "0";
+  }
+
+
+  Future<String> productcount() async{
+    int value =await _productService.productcount();
+    print("the product is $value ");
+    return value != null? "$value": "0";
+
+  }
+  Future<String> restaurantcount( ) async{
+    int values =await _restaurantService.restaurantcount();
+    print("the restaurant is  $values");
+    return values!=null? "$values":"0";
+  }
+
+   Future<String> ordercount() async {
+    int orders= await _orderServices.getorders();
+    print("the order is $orders");
+    return orders!=null ? "$orders":"0";
+
+  }
+
+  Future<String> usercount() async{
+    int count=await _users.usercount();
+    print("the users is $count");
+    return count!=null ? "$count" : "0";
+  }
 
 }

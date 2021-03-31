@@ -25,6 +25,12 @@ class _ShowRestaurantsState extends State<ShowRestaurants> {
                     .map((doc) => Card(
                           child: ListTile(
                             title: Text(doc['name']),
+                            trailing: IconButton(
+                                icon: Icon(Icons.delete_outline),
+                                color: Colors.black,
+                                onPressed: () {
+                                  deleterestaurant(doc['id']);
+                                }),
                           ),
                         ))
                     .toList(),
@@ -34,5 +40,13 @@ class _ShowRestaurantsState extends State<ShowRestaurants> {
             }
           }),
     );
+  }
+  CollectionReference users = Firestore.instance.collection('restaurants');
+  Future<void> deleterestaurant(String id) {
+    return users
+        .document(id)
+        .delete()
+        .then((value) => print("restaurant Deleted"))
+        .catchError((error) => print("Failed to delete restaurant: $error"));
   }
 }

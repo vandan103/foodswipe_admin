@@ -49,10 +49,12 @@ class _loginState extends State<login> {
                 child: Padding(padding: EdgeInsets.only(left: 10),
                   child: TextFormField(
                     controller: authProvider.email,
+                    keyboardType: TextInputType.text,
                     decoration: InputDecoration(
                         border: InputBorder.none,
                         hintText: "Email",
                         icon: Icon(Icons.email)
+
                     ),
                   ),),
               ),
@@ -67,6 +69,7 @@ class _loginState extends State<login> {
                 ),
                 child: Padding(padding: EdgeInsets.only(left: 10),
                   child: TextFormField(
+                    keyboardType: TextInputType.text,
                     controller: authProvider.password,
                     decoration: InputDecoration(
                         border: InputBorder.none,

@@ -14,6 +14,7 @@ class _ShowCategoryState extends State<ShowCategory> {
 
     return Scaffold(
       appBar: AppBar(title: Text("category list"),),
+      
       body:FutureBuilder<List<DocumentSnapshot>>(
 
           future: _categoryService.getCategories(),
@@ -24,10 +25,18 @@ class _ShowCategoryState extends State<ShowCategory> {
               return ListView(
                   children: documents.map(
                           (doc) => Card(child: ListTile(
-                      title: Text(doc['name']),
+                           title: Text(doc['name']),
+                            trailing: IconButton(
+                                icon: Icon(Icons.delete_outline),
+                                color: Colors.black,
+                                onPressed: () {
+                                  deletecategory(doc['id']);
+                                }),
                     ),
                   )
-                  ).toList());
+                  ).toList(),
+                  
+              );
             } else {
               return new CircularProgressIndicator();
             }
@@ -35,6 +44,14 @@ class _ShowCategoryState extends State<ShowCategory> {
           ),
     );
 
+  }
+  CollectionReference users = Firestore.instance.collection('categories');
+  Future<void> deletecategory(String id) {
+    return users
+        .document(id)
+        .delete()
+        .then((value) => print("category Deleted"))
+        .catchError((error) => print("Failed to delete category: $error"));
   }
 
 }

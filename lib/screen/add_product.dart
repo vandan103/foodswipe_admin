@@ -86,11 +86,12 @@ class _AddProductState extends State<AddProduct> {
       appBar: AppBar(
         elevation: 0.1,
         backgroundColor: white,
-        leading: Icon(
-          Icons.close,
-          color: black,
-          
-        ),
+        leading: IconButton(
+            icon: Icon(Icons.close),
+            color: black,
+            onPressed: () {
+              Navigator.pop(context);
+            }),
         title: Text(
           "add product",
           style: TextStyle(color: black),

@@ -21,7 +21,8 @@ class CategoryService {
   Future<int> categorycount() =>
       _firestore.collection(ref).getDocuments().then((snaps) {
         return snaps.documents.length;
-      });
+      }
+      );
 
 }
 

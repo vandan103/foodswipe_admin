@@ -24,6 +24,12 @@ class _ShowProductState extends State<ShowProduct> {
                   children: documents.map((doc) => Card(
                             child: ListTile(
                               title: Text(doc['name']),
+                              trailing: IconButton(
+                                  icon: Icon(Icons.delete_outline),
+                                  color: Colors.black,
+                                  onPressed: () {
+                                    deleteproduct(doc['id']);
+                                  }),
                             ),
                           )).toList());
             } else {
@@ -31,5 +37,13 @@ class _ShowProductState extends State<ShowProduct> {
             }
           }),
     );
+  }
+  CollectionReference users = Firestore.instance.collection('products');
+  Future<void> deleteproduct(String id) {
+    return users
+        .document(id)
+        .delete()
+        .then((value) => print("product Deleted"))
+        .catchError((error) => print("Failed to delete product: $error"));
   }
 }
